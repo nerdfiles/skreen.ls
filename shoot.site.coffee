@@ -86,11 +86,11 @@ siteRunner = () ->
         @capture base + httpAddress + sep + @getTitle().replace(/\|/g, '-') + '.png'
         return
       return
-    exec("git add #{base}#{httpAddress} -f", puts)
-    exec("git commit -m \"Snapshot of #{httpAddress}\"", puts)
-    exec("git push -u origin develop", puts)
     return
 
+  exec("git add #{base}#{httpAddress} -f", puts)
+  exec("git commit -m \"Snapshot of #{httpAddress}\"", puts)
+  exec("git push -u origin develop", puts)
 
   casper.run()
 
