@@ -1,5 +1,6 @@
-fs        = require('fs')
-utils     = require('utils')
+fs = require('fs')
+utils = require('utils')
+process = require('process')
 #cache    = require('./cache')
 #mimetype = require('mimetype')
 
@@ -30,6 +31,9 @@ siteRunner = () ->
       @page.stop()
   }
 
+  #require("utils").dump(casper.cli.args)
+  argv = casper.cli.args
+
   # print out all the messages in the headless browser context
   casper.on('remote.message', (msg) ->
     @echo('remote message caught: ' + msg)
@@ -43,15 +47,17 @@ siteRunner = () ->
        @echo('   ' + step.file + ' (line ' + step.line + ')', 'ERROR')
   )
 
-  filename = undefined
+  filename = 'http://google.com'
   links = []
 
-  process.argv.forEach((arg, index) ->
-    if index == 2
-      filename = arg
-    if index > 2
-      links.push arg
-  )
+  if argv && argv.length > 0
+    argv.forEach((arg, index) ->
+      if index == 0
+        filename = arg
+      if index > 1
+        links.push arg
+    )
+
   x = pageName = _pageName = undefined
   i = -1
   casper.start "#{filename}/", ->
@@ -62,7 +68,7 @@ siteRunner = () ->
   casper.then ->
     @each x, ->
       ++i
-      @thenOpen ("#{filename}" + x[i]), ->
+      @thenOpen ("#{filename}/" + x[i]), ->
         @capture @getTitle().replace(/\|/g, '-') + '.png'
         return
       return
