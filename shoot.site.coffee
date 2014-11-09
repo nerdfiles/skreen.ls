@@ -25,7 +25,7 @@ siteRunner = () ->
       loadImages         : true
       loadPlugins        : true
       userAgent          : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv: 22.0) Gecko/20100101 Firefox/22.0'
-      webSecurityEnabled : false
+      webSecurityEnabled : true
       ignoreSslErrors    : true
     onWaitTimeout: () ->
       @echo('wait timeout')
@@ -67,9 +67,10 @@ siteRunner = () ->
   filenameConstruct = filename.split('//')
 
   httpAddress = filenameConstruct[1]
+  base = '/Users/nerdfiles/Tools/screenshots/'
   sep = '/'
 
-  exec("mkdir -p #{httpAddress}", puts)
+  exec("mkdir -p #{base}#{httpAddress}", puts)
 
   x = pageName = _pageName = undefined
   i = -1
@@ -82,10 +83,14 @@ siteRunner = () ->
     @each x, ->
       ++i
       @thenOpen ("#{filename}/" + x[i]), ->
-        @capture httpAddress + sep + @getTitle().replace(/\|/g, '-') + '.png'
+        @capture base + httpAddress + sep + @getTitle().replace(/\|/g, '-') + '.png'
         return
       return
+    exec("git add #{base}#{httpAddress} -f", puts)
+    exec("git commit -m \"Snapshot of #{httpAddress}\"", puts)
+    exec("git push -u origin develop", puts)
     return
+
 
   casper.run()
 
