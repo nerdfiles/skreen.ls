@@ -1,10 +1,16 @@
-fs = require('fs')
-utils = require('utils')
-process = require('process')
-#cache    = require('./cache')
-#mimetype = require('mimetype')
-
 siteRunner = () ->
+  #envVars = require('system').env
+  sys = require('sys')
+  exec = require('child_process').exec
+  puts = (error, stdout, stderr) -> sys.puts(stdout)
+
+  #cache    = require('./cache')
+  #mimetype = require('mimetype')
+  fs = require('fs')
+  process = require('process')
+  #mkdirp = require('mkdirp')
+  utils = require('utils')
+  #utils.dump envVars
   casper = require('casper').create {
     verbose        : true
     logLevel       : 'debug'
@@ -54,9 +60,16 @@ siteRunner = () ->
     argv.forEach((arg, index) ->
       if index == 0
         filename = arg
-      if index > 1
+      if index > 0
         links.push arg
     )
+
+  filenameConstruct = filename.split('//')
+
+  httpAddress = filenameConstruct[1]
+  sep = '/'
+
+  exec("mkdir -p #{httpAddress}", puts)
 
   x = pageName = _pageName = undefined
   i = -1
@@ -69,7 +82,7 @@ siteRunner = () ->
     @each x, ->
       ++i
       @thenOpen ("#{filename}/" + x[i]), ->
-        @capture @getTitle().replace(/\|/g, '-') + '.png'
+        @capture httpAddress + sep + @getTitle().replace(/\|/g, '-') + '.png'
         return
       return
     return
