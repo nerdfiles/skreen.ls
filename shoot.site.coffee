@@ -1,8 +1,14 @@
+
+repo = undefined
+base = '/Users/nerdfiles/Tools/screenshots/'
+httpAddress = undefined
+sys = require('sys')
+exec = require('child_process').exec
+#git  = require('gift')
+puts = (error, stdout, stderr) -> sys.puts(stdout)
+
 siteRunner = () ->
   #envVars = require('system').env
-  sys = require('sys')
-  exec = require('child_process').exec
-  puts = (error, stdout, stderr) -> sys.puts(stdout)
 
   #cache    = require('./cache')
   #mimetype = require('mimetype')
@@ -67,7 +73,6 @@ siteRunner = () ->
   filenameConstruct = filename.split('//')
 
   httpAddress = filenameConstruct[1]
-  base = '/Users/nerdfiles/Tools/screenshots/'
   sep = '/'
 
   exec("mkdir -p #{base}#{httpAddress}", puts)
@@ -88,10 +93,15 @@ siteRunner = () ->
       return
     return
 
-  exec("git add #{base}#{httpAddress} -f", puts)
-  exec("git commit -m \"Snapshot of #{httpAddress}\"", puts)
-  exec("git push -u origin develop", puts)
-
   casper.run()
 
+#git.init "#{base}", true, (err, _repo) ->
+  #repo = _repo
+  #repo.add("#{base}#{httpAddress}")
+  #repo.commit("Snapshot of #{httpAddress}")
+  #repo.remote_push('develop')
+
+
 siteRunner()
+
+
