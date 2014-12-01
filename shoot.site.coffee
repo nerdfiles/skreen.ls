@@ -79,7 +79,7 @@ siteRunner = () ->
 
   x = pageName = _pageName = undefined
   i = -1
-  casper.start "#{filename}/", ->
+  casper.start "#{filename}", ->
     # now x is an array of links
     x = links
     return
@@ -87,7 +87,8 @@ siteRunner = () ->
   casper.then ->
     @each x, ->
       ++i
-      @thenOpen ("#{filename}/" + x[i]), ->
+      url = if x[i].indexOf('html') != -1 then "#{filename}" + sep else "#{filename}"
+      @thenOpen (url + x[i]), ->
         @capture base + httpAddress + sep + @getTitle().replace(/\|/g, '-') + '.png'
         return
       return
