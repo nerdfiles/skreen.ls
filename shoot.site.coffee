@@ -89,6 +89,7 @@ siteRunner = () ->
       ++i
       url = if x[i].indexOf('html') != -1 then "#{filename}" + sep else "#{filename}"
       @thenOpen (url + x[i]), ->
+        @wait 1000
         @capture base + httpAddress + sep + @getTitle().replace(/\|/g, '-') + '.png'
         return
       return
